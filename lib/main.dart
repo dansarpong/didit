@@ -16,10 +16,7 @@ void main() async {
   Hive.registerAdapter(IntervalAdapter());
   Hive.registerAdapter(IntervalTypeAdapter());
 
-  // Clear box for data migration (dev mode)
-  if (await Hive.boxExists('workouts')) {
-    await Hive.deleteBoxFromDisk('workouts');
-  }
+
   
   await Hive.openBox<Workout>('workouts');
 
