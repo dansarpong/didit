@@ -1,6 +1,6 @@
 # DIDIT
 
-A Flutter application for creating and running personalized High-Intensity Interval Training (HIIT) workouts with a sleek, atmospheric dark theme.
+A Flutter web application for creating and running personalized High-Intensity Interval Training (HIIT) workouts with a sleek, atmospheric dark theme.
 
 ## Features
 
@@ -29,6 +29,7 @@ A Flutter application for creating and running personalized High-Intensity Inter
   - Celebration animation on completion
 
 - **Design**
+  - Mobile-first responsive design
   - Dark theme with neon cyan/pink accents
   - Smooth animations and transitions
   - Color-coded interval types:
@@ -40,7 +41,6 @@ A Flutter application for creating and running personalized High-Intensity Inter
 ### 🧪 Testing
 
 - **18 unit tests** covering models and business logic
-- **Integration tests** for complete user workflows
 - Run tests: `flutter test`
 
 ## Getting Started
@@ -48,7 +48,7 @@ A Flutter application for creating and running personalized High-Intensity Inter
 ### Prerequisites
 
 - Flutter SDK (latest stable version)
-- Linux development tools (for Linux builds)
+- Chrome or any modern web browser
 
 ### Installation
 
@@ -68,16 +68,18 @@ flutter pub get
 3. Run the app:
 
 ```bash
-flutter run -d linux
+flutter run -d chrome
 ```
 
 ### Building
 
-Build for Linux:
+Build for web:
 
 ```bash
-flutter build linux
+flutter build web
 ```
+
+The built files will be in `build/web/` directory.
 
 ## Project Structure
 
@@ -99,8 +101,7 @@ test/
 ├── models/                   # Model unit tests
 └── providers/                # Provider unit tests
 
-integration_test/
-└── app_test.dart            # End-to-end tests
+web/                          # Web-specific files
 ```
 
 ## Tech Stack
@@ -151,13 +152,11 @@ integration_test/
 ## TODO
 
 - [ ] Add sound cues for interval transitions
-- [ ] Add workout history tracking
-- [ ] Export/import workouts
-- [ ] Add preset workout templates
-- [ ] Support for Android and iOS platforms
-- [ ] Add workout statistics and progress tracking
-- [ ] Custom color themes
 - [ ] Voice announcements during workouts
+- [ ] Add workout history tracking
+- [ ] Export/import workouts (JSON)
+- [ ] Add preset workout templates
+- [ ] Custom color themes
 
 ## Contributing
 
