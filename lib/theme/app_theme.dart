@@ -61,6 +61,23 @@ class AppTheme {
         backgroundColor: primaryAccent,
         foregroundColor: background,
       ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: surface.withValues(alpha: 0.8),
+        indicatorColor: primaryAccent.withValues(alpha: 0.2),
+        labelTextStyle: WidgetStateProperty.all(
+          GoogleFonts.outfit(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: textPrimary,
+          ),
+        ),
+        iconTheme: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return const IconThemeData(color: primaryAccent);
+          }
+          return const IconThemeData(color: textSecondary);
+        }),
+      ),
     );
   }
 }

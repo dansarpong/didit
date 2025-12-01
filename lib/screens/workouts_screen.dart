@@ -24,26 +24,32 @@ class WorkoutsScreen extends StatelessWidget {
           ),
         ),
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 20),
-                Text(
-                  'DIDIT',
-                  style: Theme.of(context).textTheme.displayLarge,
-                ).animate().fadeIn().slideX(),
-                Text(
-                  'Your workouts',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ).animate().fadeIn(delay: 200.ms).slideX(),
-                const SizedBox(height: 30),
-                Expanded(
-                  child: Consumer<WorkoutProvider>(
-                    builder: (context, provider, child) {
-                      if (provider.workouts.isEmpty) {
-                        return Center(
+          child: CustomScrollView(
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.all(16.0),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    const SizedBox(height: 20),
+                    Text(
+                      'DIDIT',
+                      style: Theme.of(context).textTheme.displayLarge,
+                    ).animate().fadeIn().slideX(),
+                    Text(
+                      'Your workouts',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ).animate().fadeIn(delay: 200.ms).slideX(),
+                    const SizedBox(height: 30),
+                  ]),
+                ),
+              ),
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                sliver: Consumer<WorkoutProvider>(
+                  builder: (context, provider, child) {
+                    if (provider.workouts.isEmpty) {
+                      return SliverFillRemaining(
+                        child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -67,24 +73,27 @@ class WorkoutsScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                        ).animate().fadeIn(duration: 500.ms);
-                      }
-                      return ListView.builder(
-                        itemCount: provider.workouts.length,
-                        itemBuilder: (context, index) {
+                        ).animate().fadeIn(duration: 500.ms),
+                      );
+                    }
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
                           final workout = provider.workouts[index];
                           return _WorkoutCard(workout: workout, index: index);
                         },
-                      );
-                    },
-                  ),
+                        childCount: provider.workouts.length,
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: FloatingActionButton(
+        heroTag: 'workouts_fab',
         onPressed: () {
           Navigator.push(
             context,
@@ -92,8 +101,7 @@ class WorkoutsScreen extends StatelessWidget {
                 builder: (context) => const CreateWorkoutScreen()),
           );
         },
-        label: const Text('Create Workout'),
-        icon: const Icon(Icons.add),
+        child: const Icon(Icons.add),
       ).animate().scale(delay: 500.ms),
     );
   }

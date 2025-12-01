@@ -8,5 +8,7 @@
 - [ ] Export/import workouts (JSON)
 - [ ] Add preset workout templates
 - [ ] Custom color themes
-- [ ] Add a bell icon for logs of project changes
+- [ ] Auto-update app version in settings
 - [ ] Update loading screen and throttling on low-end devices
+- [ ] Add Privacy Policy and Terms of Service pages
+- [ ] Remove license (close-sourced)

@@ -62,6 +62,16 @@ class WorkoutProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> deleteHistory(int index) async {
+    // Since we sort the list, the index in _history might not match the index in _historyBox.
+    // We need to find the key of the item to delete.
+    final itemToDelete = _history[index];
+    final key = _historyBox!.keyAt(_historyBox!.values.toList().indexOf(itemToDelete));
+    await _historyBox?.delete(key);
+    _history = _historyBox!.values.toList()..sort((a, b) => b.completedAt.compareTo(a.completedAt));
+    notifyListeners();
+  }
+
   Future<void> clearHistory() async {
     await _historyBox?.clear();
     _history = [];
