@@ -177,4 +177,22 @@ void main() {
       expect(updated.durationSeconds, 45);
     });
   });
+
+  group('WorkoutHistory Tests', () {
+    test('WorkoutHistory creation', () {
+      final now = DateTime.now();
+      final history = WorkoutHistory(
+        workoutId: '123',
+        workoutName: 'Test Workout',
+        completedAt: now,
+        durationSeconds: 300,
+      );
+
+      expect(history.workoutId, '123');
+      expect(history.workoutName, 'Test Workout');
+      expect(history.completedAt, now);
+      expect(history.durationSeconds, 300);
+      expect(history.id, isNotEmpty);
+    });
+  });
 }

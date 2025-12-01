@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart' hide Interval;
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
 import '../models/workout_model.dart';
+import '../providers/workout_provider.dart';
 
 enum WorkoutPhase { warmup, main, cooldown }
 
@@ -98,6 +100,14 @@ class _RunWorkoutScreenState extends State<RunWorkoutScreen> {
   }
 
   void _finishWorkout() {
+    final history = WorkoutHistory(
+      workoutId: widget.workout.id,
+      workoutName: widget.workout.name,
+      completedAt: DateTime.now(),
+      durationSeconds: widget.workout.totalDuration,
+    );
+    context.read<WorkoutProvider>().addHistory(history);
+
     setState(() {
       _isFinished = true;
     });

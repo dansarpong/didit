@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 // Exercise: 1
 // Interval: 2
 // IntervalType: 3
+// WorkoutHistory: 4
 
 enum IntervalType { work, rest, warmup, cooldown }
 
@@ -149,5 +150,46 @@ class WorkoutAdapter extends TypeAdapter<Workout> {
     writer.writeString(obj.id);
     writer.writeList(obj.warmup);
     writer.writeList(obj.cooldown);
+  }
+}
+
+class WorkoutHistory extends HiveObject {
+  String id;
+  String workoutId;
+  String workoutName;
+  DateTime completedAt;
+  int durationSeconds;
+
+  WorkoutHistory({
+    required this.workoutId,
+    required this.workoutName,
+    required this.completedAt,
+    required this.durationSeconds,
+    String? id,
+  }) : id = id ?? const Uuid().v4();
+}
+
+class WorkoutHistoryAdapter extends TypeAdapter<WorkoutHistory> {
+  @override
+  final int typeId = 4;
+
+  @override
+  WorkoutHistory read(BinaryReader reader) {
+    return WorkoutHistory(
+      workoutId: reader.readString(),
+      workoutName: reader.readString(),
+      completedAt: DateTime.fromMillisecondsSinceEpoch(reader.readInt()),
+      durationSeconds: reader.readInt(),
+      id: reader.readString(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, WorkoutHistory obj) {
+    writer.writeString(obj.workoutId);
+    writer.writeString(obj.workoutName);
+    writer.writeInt(obj.completedAt.millisecondsSinceEpoch);
+    writer.writeInt(obj.durationSeconds);
+    writer.writeString(obj.id);
   }
 }

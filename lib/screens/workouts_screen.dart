@@ -6,8 +6,8 @@ import '../models/workout_model.dart';
 import 'create_workout_screen.dart';
 import 'run_workout_screen.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class WorkoutsScreen extends StatelessWidget {
+  const WorkoutsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
