@@ -157,5 +157,24 @@ void main() {
 
       expect(interval.durationSeconds, 300);
     });
+    test('Interval properties can be updated', () {
+      final interval = Interval(
+        type: IntervalType.work,
+        durationSeconds: 30,
+        name: 'Original',
+      );
+
+      // Simulate editing by creating a new interval with same ID
+      final updated = Interval(
+        type: IntervalType.work,
+        durationSeconds: 45,
+        name: 'Updated',
+        id: interval.id,
+      );
+
+      expect(updated.id, interval.id);
+      expect(updated.name, 'Updated');
+      expect(updated.durationSeconds, 45);
+    });
   });
 }

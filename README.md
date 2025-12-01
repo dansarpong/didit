@@ -4,14 +4,14 @@ A Flutter web application for creating and running personalized High-Intensity I
 
 ## Features
 
-### ✨ Current Features
+### Current Features
 
 - **Custom Workout Creation**
   - Create workouts with warmup, work/rest intervals, and cooldown
-  - Editable interval names for personalization
+  - **Edit exercise details** (name, duration, reps) by tapping on them
   - Time-based intervals (up to 5 minutes)
   - Reps-based intervals for exercises like push-ups
-  - Reorderable intervals in work/rest section
+  - **Reorderable intervals** in all sections (Warmup, Work/Rest, Cooldown)
   - Configurable number of rounds
 
 - **Workout Management**
@@ -38,7 +38,7 @@ A Flutter web application for creating and running personalized High-Intensity I
     - 🟧 Orange: Warmup
     - 🟩 Green: Cooldown
 
-### 🧪 Testing
+### Testing
 
 - **18 unit tests** covering models and business logic
 - Run tests: `flutter test`
@@ -151,9 +151,11 @@ web/                          # Web-specific files
 
 ## TODO
 
+- [ ] Add menu tabs (Workouts, Logbook, Settings)
 - [ ] Add sound cues for interval transitions
 - [ ] Voice announcements during workouts
 - [ ] Add workout history tracking
+- [ ] Add notepad feature for creating or editing workouts
 - [ ] Export/import workouts (JSON)
 - [ ] Add preset workout templates
 - [ ] Custom color themes

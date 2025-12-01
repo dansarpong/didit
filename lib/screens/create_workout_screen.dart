@@ -55,6 +55,23 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
     );
   }
 
+  void _editInterval(Interval interval, int index, List<Interval> list) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).cardColor,
+      builder: (context) => _AddIntervalSheet(
+        type: interval.type,
+        initialInterval: interval,
+        onSave: (updatedInterval) {
+          setState(() {
+            list[index] = updatedInterval;
+          });
+        },
+      ),
+    );
+  }
+
   void _saveWorkout() {
     if (_formKey.currentState!.validate() && _intervals.isNotEmpty) {
       final workout = Workout(
@@ -92,44 +109,17 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
     }
   }
 
-  List<Widget> _buildIntervalList(List<Interval> list, {bool isWarmup = false, bool isCooldown = false}) {
-    return list.asMap().entries.map((entry) {
-      final i = entry.key;
-      final interval = entry.value;
-      return Padding(
-        key: ValueKey(interval.id),
-        padding: const EdgeInsets.only(bottom: 8.0),
-        child: ListTile(
-          tileColor: Theme.of(context).cardColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          title: Text(
-            interval.name,
-            style: TextStyle(
-              color: _getIntervalColor(context, interval.type),
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          subtitle: Text(
-            interval.isReps ? '${interval.reps} reps' : '${interval.durationSeconds} seconds',
-          ),
-          trailing: IconButton(
-            icon: const Icon(Icons.delete_outline),
-            onPressed: () {
-              setState(() {
-                list.removeAt(i);
-              });
-            },
-          ),
-        ),
-      );
-    }).toList();
-  }
 
   ListTile _buildIntervalTile(Interval interval, int index, List<Interval> list) {
     return ListTile(
       key: ValueKey(interval.id),
+      onTap: () => _editInterval(interval, index, list),
       tileColor: Theme.of(context).cardColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      leading: ReorderableDragStartListener(
+        index: index,
+        child: const Icon(Icons.drag_handle),
+      ),
       title: Text(
         interval.name,
         style: TextStyle(
@@ -220,7 +210,22 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                             ),
                       ),
                       const SizedBox(height: 8),
-                      ..._buildIntervalList(_warmup, isWarmup: true),
+                      ReorderableListView(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        buildDefaultDragHandles: false,
+                        onReorder: (oldIndex, newIndex) {
+                          setState(() {
+                            if (oldIndex < newIndex) newIndex -= 1;
+                            final item = _warmup.removeAt(oldIndex);
+                            _warmup.insert(newIndex, item);
+                          });
+                        },
+                        children: [
+                          for (int i = 0; i < _warmup.length; i++)
+                            _buildIntervalTile(_warmup[i], i, _warmup),
+                        ],
+                      ),
                       const SizedBox(height: 16),
                     ],
                     // Main Intervals Section
@@ -242,6 +247,7 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                       ReorderableListView(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
+                        buildDefaultDragHandles: false,
                         onReorder: (oldIndex, newIndex) {
                           setState(() {
                             if (oldIndex < newIndex) newIndex -= 1;
@@ -265,7 +271,22 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
                             ),
                       ),
                       const SizedBox(height: 8),
-                      ..._buildIntervalList(_cooldown, isCooldown: true),
+                      ReorderableListView(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        buildDefaultDragHandles: false,
+                        onReorder: (oldIndex, newIndex) {
+                          setState(() {
+                            if (oldIndex < newIndex) newIndex -= 1;
+                            final item = _cooldown.removeAt(oldIndex);
+                            _cooldown.insert(newIndex, item);
+                          });
+                        },
+                        children: [
+                          for (int i = 0; i < _cooldown.length; i++)
+                            _buildIntervalTile(_cooldown[i], i, _cooldown),
+                        ],
+                      ),
                     ],
                   ],
                 ),
@@ -342,9 +363,14 @@ class _CreateWorkoutScreenState extends State<CreateWorkoutScreen> {
 
 class _AddIntervalSheet extends StatefulWidget {
   final IntervalType type;
+  final Interval? initialInterval;
   final Function(Interval) onSave;
 
-  const _AddIntervalSheet({required this.type, required this.onSave});
+  const _AddIntervalSheet({
+    required this.type,
+    required this.onSave,
+    this.initialInterval,
+  });
 
   @override
   State<_AddIntervalSheet> createState() => _AddIntervalSheetState();
@@ -359,9 +385,16 @@ class _AddIntervalSheetState extends State<_AddIntervalSheet> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(
-      text: widget.type.name.toUpperCase(),
-    );
+    if (widget.initialInterval != null) {
+      _duration = widget.initialInterval!.durationSeconds;
+      _reps = widget.initialInterval!.reps;
+      _isReps = widget.initialInterval!.isReps;
+      _nameController = TextEditingController(text: widget.initialInterval!.name);
+    } else {
+      _nameController = TextEditingController(
+        text: widget.type.name.toUpperCase(),
+      );
+    }
   }
 
   @override
@@ -383,7 +416,9 @@ class _AddIntervalSheetState extends State<_AddIntervalSheet> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            'Add ${widget.type.name.toUpperCase()} Interval',
+            widget.initialInterval != null
+                ? 'Edit ${widget.type.name.toUpperCase()} Interval'
+                : 'Add ${widget.type.name.toUpperCase()} Interval',
             style: Theme.of(context).textTheme.displayMedium,
           ),
           const SizedBox(height: 20),
@@ -488,10 +523,11 @@ class _AddIntervalSheetState extends State<_AddIntervalSheet> {
                       : _nameController.text,
                   isReps: _isReps,
                   reps: _reps,
+                  id: widget.initialInterval?.id,
                 ));
                 Navigator.pop(context);
               },
-              child: const Text('Add'),
+              child: Text(widget.initialInterval != null ? 'Save' : 'Add'),
             ),
           ),
         ],
