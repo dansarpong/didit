@@ -52,3 +52,10 @@ app.*.map.json
 
 # Coverage
 coverage/
+
+# Local configuration
+.env
+
+# Build artifacts
+*.ipa
+*.dSYM.zip
