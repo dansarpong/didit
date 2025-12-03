@@ -11,7 +11,7 @@ A Flutter web application for creating and running personalized High-Intensity I
   - Edit exercise details (name, duration, reps) by tapping on them
   - Time-based intervals (up to 5 minutes)
   - Reps-based intervals for exercises like push-ups
-  - Reorderable intervals in all sections (Warmup, Work/Rest, Cooldown)
+  - Reorderable intervals in all sections (Warmup, Work/Rest, Cooldown) with drag handles
   - Configurable number of rounds
 
 - **Workout Management**
@@ -27,11 +27,20 @@ A Flutter web application for creating and running personalized High-Intensity I
   - Skip to next interval
   - Manual advance for reps-based intervals
   - Celebration animation on completion
+  - Automatic history tracking upon completion
+
+- **Navigation & History**
+  - Bottom navigation bar with three tabs: Workouts, Logbook, and Settings
+  - Logbook displays workout history with completion timestamps and durations
+  - Edit mode for deleting individual workout logs
+  - Clear all history option
 
 - **Design**
-  - Mobile-first responsive design
+  - Web-first, mobile-first responsive design
   - Dark theme with neon cyan/pink accents
-  - Smooth animations and transitions
+  - Smooth animations and transitions throughout the app
+  - Premium UI with gradient backgrounds
+  - Consistent header design across all pages
   - Color-coded interval types:
     - 🟦 Cyan: Work intervals
     - 🟪 Pink: Rest intervals
@@ -87,11 +96,14 @@ The built files will be in `build/web/` directory.
 lib/
 ├── main.dart                 # App entry point
 ├── models/
-│   └── workout_model.dart    # Data models (Workout, Interval, Exercise)
+│   └── workout_model.dart    # Data models (Workout, Interval, WorkoutHistory)
 ├── providers/
 │   └── workout_provider.dart # State management
 ├── screens/
-│   ├── home_screen.dart      # Workout list
+│   ├── main_screen.dart      # Bottom navigation shell
+│   ├── workouts_screen.dart  # Workout list
+│   ├── logbook_screen.dart   # Workout history
+│   ├── settings_screen.dart  # App settings
 │   ├── create_workout_screen.dart  # Create/edit workouts
 │   └── run_workout_screen.dart     # Execute workouts
 └── theme/
@@ -111,28 +123,40 @@ web/                          # Web-specific files
 - **Local Storage**: Hive (NoSQL database)
 - **Typography**: Google Fonts (Outfit)
 - **Animations**: flutter_animate
+- **Date Formatting**: intl
 
 ## Usage
 
+### Navigation
+
+The app features three main tabs accessible via the bottom navigation bar:
+
+- **Workouts**: Create, view, edit, and manage your workout library
+- **Logbook**: View your workout history with completion dates and durations
+- **Settings**: App information and preferences
+
 ### Creating a Workout
 
-1. Tap the **+** button on the home screen
-2. Enter a workout name
-3. Add intervals:
+1. Navigate to the **Workouts** tab
+2. Tap the **+** button
+3. Enter a workout name
+4. Add intervals:
    - **Warmup**: Executed once at the start
    - **Work/Rest**: Repeated for the specified rounds
    - **Cooldown**: Executed once at the end
-4. For each interval:
+5. For each interval:
    - Choose the type (Warmup, Work, Rest, Cooldown)
    - Set a custom name (optional)
    - Choose Time or Reps mode
    - Set duration (1-300 seconds) or reps (1-100)
-5. Set the number of rounds
-6. Tap the checkmark to save
+6. Reorder intervals by dragging the handle icon
+7. Tap any interval to edit its details
+8. Set the number of rounds
+9. Tap the checkmark to save
 
 ### Running a Workout
 
-1. Tap on a workout card from the home screen
+1. From the **Workouts** tab, tap on a workout card
 2. The workout executes in phases:
    - Warmup intervals (once)
    - Work/Rest intervals (repeated for rounds)
@@ -141,13 +165,21 @@ web/                          # Web-specific files
    - **Pause/Play**: Pause or resume the timer
    - **Skip**: Advance to the next interval
    - **Done**: (Reps mode) Mark interval as complete
+4. Upon completion, the workout is automatically saved to your history
 
 ### Editing a Workout
 
-1. Tap the **⋮** menu on a workout card
+1. From the **Workouts** tab, tap the **⋮** menu on a workout card
 2. Select **Edit**
-3. Make changes
+3. Make changes (edit intervals, reorder, add/remove)
 4. Tap the checkmark to save
+
+### Managing History
+
+1. Navigate to the **Logbook** tab to view completed workouts
+2. Tap the **edit** button (pencil icon) to enter edit mode
+3. Tap the delete icon next to any workout log to remove it
+4. Tap the checkmark to exit edit mode
 
 ## Contributing
 
