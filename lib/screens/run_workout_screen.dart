@@ -4,6 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../models/workout_model.dart';
 import '../providers/workout_provider.dart';
+import '../providers/settings_provider.dart';
+import '../services/audio_service.dart';
 
 enum WorkoutPhase { warmup, main, cooldown }
 
@@ -24,6 +26,7 @@ class _RunWorkoutScreenState extends State<RunWorkoutScreen> {
   bool _isPaused = false;
   bool _isFinished = false;
   WorkoutPhase _phase = WorkoutPhase.warmup;
+  final AudioService _audioService = AudioService();
 
   // Computed properties for current interval
   Interval? get _currentInterval {
@@ -49,6 +52,7 @@ class _RunWorkoutScreenState extends State<RunWorkoutScreen> {
   @override
   void initState() {
     super.initState();
+    _audioService.initialize();
     _startInterval();
   }
 
@@ -84,10 +88,27 @@ class _RunWorkoutScreenState extends State<RunWorkoutScreen> {
       _remainingSeconds = interval.durationSeconds;
     });
 
+    // Play sound for interval start
+    final settings = context.read<SettingsProvider>().settings;
+    if (interval.type == IntervalType.work) {
+      _audioService.playSound(SoundType.workStart, settings);
+    } else if (interval.type == IntervalType.rest) {
+      _audioService.playSound(SoundType.restStart, settings);
+    } else if (interval.type == IntervalType.warmup) {
+      _audioService.playSound(SoundType.warmupStart, settings);
+    } else if (interval.type == IntervalType.cooldown) {
+      _audioService.playSound(SoundType.cooldownStart, settings);
+    }
+
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_isPaused) return;
 
       if (_remainingSeconds > 0) {
+        // Play countdown beep at 3, 2, 1 seconds
+        if (_remainingSeconds <= 3 && _remainingSeconds >= 1) {
+          _audioService.playSound(SoundType.countdown, settings);
+        }
+        
         setState(() {
           _remainingSeconds--;
         });
@@ -108,6 +129,10 @@ class _RunWorkoutScreenState extends State<RunWorkoutScreen> {
     );
     context.read<WorkoutProvider>().addHistory(history);
 
+    // Play completion sound
+    final settings = context.read<SettingsProvider>().settings;
+    _audioService.playSound(SoundType.workoutComplete, settings);
+
     setState(() {
       _isFinished = true;
     });
@@ -123,6 +148,7 @@ class _RunWorkoutScreenState extends State<RunWorkoutScreen> {
   @override
   void dispose() {
     _timer.cancel();
+    _audioService.dispose();
     super.dispose();
   }
 

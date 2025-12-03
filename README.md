@@ -35,6 +35,18 @@ A Flutter web application for creating and running personalized High-Intensity I
   - Edit mode for deleting individual workout logs
   - Clear all history option
 
+- **Audio Cues**
+  - Sound feedback for interval transitions
+  - Distinct sounds for work, rest, warmup, and cooldown intervals
+  - Countdown beeps at 3-2-1 seconds before interval end
+  - Completion sound when workout finishes
+  - Fully configurable in Settings:
+    - Master toggle for all sounds
+    - Individual toggles for each sound type
+    - Volume control (0-100%)
+    - Test buttons to preview sounds
+  - Sounds persist across sessions
+
 - **Design**
   - Web-first, mobile-first responsive design
   - Dark theme with neon cyan/pink accents
@@ -49,7 +61,7 @@ A Flutter web application for creating and running personalized High-Intensity I
 
 ### Testing
 
-- **18 unit tests** covering models and business logic
+- **Unit tests** covering models, providers, and services
 - Run tests: `flutter test`
 
 ## Getting Started
@@ -92,13 +104,15 @@ The built files will be in `build/web/` directory.
 
 ## Project Structure
 
-```
+```text
 lib/
 ├── main.dart                 # App entry point
 ├── models/
-│   └── workout_model.dart    # Data models (Workout, Interval, WorkoutHistory)
+│   ├── workout_model.dart    # Data models (Workout, Interval, WorkoutHistory)
+│   └── settings_model.dart   # Settings data model
 ├── providers/
-│   └── workout_provider.dart # State management
+│   ├── workout_provider.dart # Workout state management
+│   └── settings_provider.dart # Settings state management
 ├── screens/
 │   ├── main_screen.dart      # Bottom navigation shell
 │   ├── workouts_screen.dart  # Workout list
@@ -106,14 +120,20 @@ lib/
 │   ├── settings_screen.dart  # App settings
 │   ├── create_workout_screen.dart  # Create/edit workouts
 │   └── run_workout_screen.dart     # Execute workouts
+├── services/
+│   └── audio_service.dart    # Audio playback management
 └── theme/
     └── app_theme.dart        # App styling
 
 test/
 ├── models/                   # Model unit tests
-└── providers/                # Provider unit tests
+├── providers/                # Provider unit tests
+└── services/                 # Service unit tests
 
 web/                          # Web-specific files
+
+assets/
+└── sounds/                   # Audio files for sound cues
 ```
 
 ## Tech Stack
@@ -123,6 +143,7 @@ web/                          # Web-specific files
 - **Local Storage**: Hive (NoSQL database)
 - **Typography**: Google Fonts (Outfit)
 - **Animations**: flutter_animate
+- **Audio**: just_audio
 - **Date Formatting**: intl
 
 ## Usage

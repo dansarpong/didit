@@ -3,8 +3,10 @@ import 'package:provider/provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'theme/app_theme.dart';
 import 'providers/workout_provider.dart';
+import 'providers/settings_provider.dart';
 import 'screens/main_screen.dart';
 import 'models/workout_model.dart';
+import 'models/settings_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,6 +18,7 @@ void main() async {
   Hive.registerAdapter(IntervalAdapter());
   Hive.registerAdapter(IntervalTypeAdapter());
   Hive.registerAdapter(WorkoutHistoryAdapter());
+  Hive.registerAdapter(SettingsAdapter());
 
 
   
@@ -33,6 +36,9 @@ class DiditApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => WorkoutProvider()),
+        ChangeNotifierProvider(
+          create: (_) => SettingsProvider()..initialize(),
+        ),
       ],
       child: MaterialApp(
         title: 'DIDIT',

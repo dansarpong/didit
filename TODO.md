@@ -1,7 +1,7 @@
 # TODOs for DIDIT (HIIT App)
 
-- [ ] Add sound cues for interval transitions
 - [ ] Fix workout history tracking (Properly track time and workout details)
+- [ ] Add confirmation before workout deletion and multi-choice selection
 - [ ] Fix settings with proper customization
 - [ ] Voice announcements during workouts
 - [ ] Add notepad feature for creating or editing workouts
